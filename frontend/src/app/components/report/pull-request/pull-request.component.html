@@ -1,0 +1,9 @@
+<li>
+  <a target="_blank" rel="noopener noreferrer" href={{pullRequest.url}}
+     [style.color]="pullRequest.overDue? 'red' : 'green'">
+    {{pullRequest.title}}</a>
+
+  <div *ngIf="pullRequest.associatedIssues">
+    <app-issue [issues]="pullRequest.associatedIssues"></app-issue>
+  </div>
+</li>

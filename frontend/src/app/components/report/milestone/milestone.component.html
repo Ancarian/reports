@@ -1,0 +1,23 @@
+<mat-expansion-panel style="margin-left: 5px; margin-right: 5px">
+  <mat-expansion-panel-header>
+    <a [style.color]="milestone.hasOverduePullRequests? 'red' : 'green'">
+      {{milestone.title}}
+    </a>
+  </mat-expansion-panel-header>
+
+  <ng-template matExpansionPanelContent>
+    <div>
+      <ul>
+        <li *ngIf="milestone.dueOn">Due on: {{milestone.dueOn | date}}</li>
+        <li>Total Effort: {{milestone.totalEffort}}</li>
+        <li>Effort Remaining: {{milestone.outstandingEffort}}</li>
+      </ul>
+      <div class="card-container" *ngFor="let pullRequest of milestone.openedPullRequests">
+        <ul>
+          <app-pull-request [pullRequest]="pullRequest"></app-pull-request>
+        </ul>
+      </div>
+    </div>
+  </ng-template>
+</mat-expansion-panel>
+

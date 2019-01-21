@@ -1,0 +1,20 @@
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+ul {
+  list-style-type: none;
+  padding-left: 5px;
+}
+
+body{
+  background-color: #F7F7F7;
+}
+
+.card-container {
+  padding-left: 10px;
+}
+
+.img {
+  background-image: url("assets/opf-site-logo.png");
+  width: 84px;
+  height: 48px
+}

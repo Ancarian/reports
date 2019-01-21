@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="column col-2" *ngIf="otherReports">
+    <p>{{otherReports.organisation}}, {{otherReports.repositorySummaries[0].repository }}<br/>report {{reportName}}</p>
+    <div *ngFor="let link of otherReports.repositorySummaries[0].filenames">
+      <a [routerLink]="['../', link]">{{link}}</a>
+    </div>
+  </div>
+  <div class="column col-10" *ngIf="report">
+    <mat-tab-group>
+      <mat-tab label="project">
+        <app-per-project [perProject]="report.perProject"></app-per-project>
+      </mat-tab>
+      <mat-tab label="release">
+        <app-per-release [perRelease]="report.perRelease"></app-per-release>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
+
+

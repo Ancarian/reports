@@ -8,7 +8,7 @@
 
     <ng-template matExpansionPanelContent>
         <ul>
-          <li>Release Date: {{release.createdAt}}</li>
+          <li>Release Date: {{release.createdAt | date:'dd MMM yyyy'}}</li>
           <li>Total Issues in Release: {{release.issueCount}}</li>
           <li>Total Dev Time: {{release.totalDevelopmentTime}}</li>
           <li>Total Integration Time: {{release.integrationTime}}</li>

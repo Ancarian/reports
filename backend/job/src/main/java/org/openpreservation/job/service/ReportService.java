@@ -13,11 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -74,10 +70,7 @@ public class ReportService {
 					             .collect(toList());
 
 			for (MilestoneReportPart part : milestones) {
-				part.setIssues(githubService.getAllIssues(user, repository, String.valueOf(part.getNumber()))
-				                            .stream()
-				                            .sorted(Comparator.comparingInt(o -> STATUSES.indexOf(o.getIssueStatus())))
-				                            .collect(Collectors.toList()));
+				part.setIssues(new ArrayList<>(githubService.getAllIssues(user, repository, String.valueOf(part.getNumber()))));
 			}
 
 			Map<String, List<MilestoneReportPart>> releases =
@@ -88,7 +81,16 @@ public class ReportService {
 					          .collect(groupingBy(MilestoneReportPart::getVersion));
 
 
-			List<ReleaseReportPart> releaseReportParts = releases.values().stream().map(ReleaseReportPart::new).collect(toList());
+			List<ReleaseReportPart> releaseReportParts = releases.values().stream().map(milestonesParts -> {
+				MilestoneReportPart initialMilestone = milestonesParts.get(0);
+				final List<CustomIssue> customIssues = new ArrayList<>();
+				milestonesParts.forEach(milestoneReportPart -> customIssues.addAll(milestoneReportPart.getIssues()));
+				return new ReleaseReportPart(initialMilestone.getVersion(),
+				                             initialMilestone.getCreatedAt(),
+				                             customIssues.stream()
+				                                         .sorted(Comparator.comparingInt(o -> STATUSES.indexOf(o.getIssueStatus())))
+				                                         .collect(toList()));
+			}).collect(toList());
 			List<CustomIssue> backLog = githubService.getOpenedIssues(user, repository, "none");
 			return new Report(backLog, releaseReportParts);
 		} catch (IOException e) {

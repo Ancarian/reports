@@ -3,13 +3,14 @@ package org.openpreservation.core.model.report;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReleaseReportPart {
+	private final List<CustomIssue.IssueStatus> STATUSES = Arrays.asList(CustomIssue.IssueStatus.values());
+
 	private String version;
 	private Date createdAt;
 	private List<CustomIssue> customIssues;
@@ -18,12 +19,11 @@ public class ReleaseReportPart {
 
 	}
 
-	public ReleaseReportPart(List<MilestoneReportPart> milestones) {
-		MilestoneReportPart initiatedMilestone = milestones.get(0);
-		this.version = initiatedMilestone.getVersion();
-		this.createdAt = initiatedMilestone.getCreatedAt();
+	public ReleaseReportPart(String version, Date createdAt, List<CustomIssue> customIssues) {
+		this.version = version;
+		this.createdAt = createdAt;
 		this.customIssues = new ArrayList<>();
-		milestones.forEach(part -> this.customIssues.addAll(part.getIssues()));
+		this.customIssues= customIssues;
 	}
 
 	public int getIssueCount(){

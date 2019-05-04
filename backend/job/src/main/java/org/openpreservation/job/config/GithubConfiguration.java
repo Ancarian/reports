@@ -17,9 +17,8 @@ public class GithubConfiguration {
 		);
 		IssueService issueService = issueService(gitHubClient);
 		MilestoneService milestoneService = milestoneService(gitHubClient);
-		PullRequestService pullRequestService = pullRequestService(gitHubClient);
 		RepositoryService repositoryService = repositoryService(gitHubClient);
-		return new GithubService(issueService, milestoneService, pullRequestService, repositoryService);
+		return new GithubService(issueService, milestoneService, repositoryService);
 	}
 
 	private static GitHubClient gitHubClient(String login, String password) {

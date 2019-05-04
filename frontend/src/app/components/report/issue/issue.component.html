@@ -1,5 +1,5 @@
-<mat-accordion *ngIf="issues">
-  <mat-expansion-panel  *ngFor="let issue of issues">
+<mat-accordion *ngIf="issues" >
+  <mat-expansion-panel  *ngFor="let issue of issues" style="margin-left: 10px; margin-right: 10px">
     <mat-expansion-panel-header>
       <a target="_blank" rel="noopener noreferrer" href={{issue.htmlUrl}} *ngIf="isNeedPrintStatus"
 

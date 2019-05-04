@@ -8,10 +8,10 @@
   <div class="column col-10" *ngIf="report">
     <mat-tab-group>
       <mat-tab label="Global Backlog">
-        <app-issue [issues]="report.globalBacklog" [isNeedPrintStatus]="false"></app-issue>
+        <app-issue style="margin: 10px" [issues]="report.globalBacklog" [isNeedPrintStatus]="false"></app-issue>
       </mat-tab>
       <mat-tab label="Release Backlog">
-        <app-per-release [perRelease]="report.releaseBacklog"></app-per-release>
+        <app-per-release style="margin: 10px" [perRelease]="report.releaseBacklog"></app-per-release>
       </mat-tab>
     </mat-tab-group>
   </div>

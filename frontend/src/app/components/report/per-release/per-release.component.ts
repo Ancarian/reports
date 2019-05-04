@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {PerProject, PerRelease} from '../../../core/model/model';
+import {PerRelease} from '../../../core/model/model';
 
 @Component({
   selector: 'app-per-release',
@@ -7,7 +7,7 @@ import {PerProject, PerRelease} from '../../../core/model/model';
 })
 export class PerReleaseComponent implements OnInit {
 
-  @Input() perRelease: PerRelease;
+  @Input() perRelease: PerRelease[];
 
   constructor() { }
 

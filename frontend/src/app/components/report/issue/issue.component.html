@@ -1,13 +1,18 @@
-<mat-accordion style="margin: 15px">
-  <mat-expansion-panel style="margin-left: 5px; margin-right: 5px" *ngFor="let issue of issues">
+<mat-accordion *ngIf="issues">
+  <mat-expansion-panel  *ngFor="let issue of issues">
     <mat-expansion-panel-header>
-      <a target="_blank" rel="noopener noreferrer" href={{issue.htmlUrl}}>
+      <a target="_blank" rel="noopener noreferrer" href={{issue.htmlUrl}} *ngIf="isNeedPrintStatus"
+
+         [style.color]="issue.issueStatus == 'NOT_ASSOCIATED' ? '#FF4136' : (issue.issueStatus == 'MERGED' ? '#3D9970' : '#FFDC00')">
+        #{{issue.id}}: {{issue.title}}
+      </a>
+      <a target="_blank" rel="noopener noreferrer" href={{issue.htmlUrl}} *ngIf="!isNeedPrintStatus">
         #{{issue.id}}: {{issue.title}}
       </a>
     </mat-expansion-panel-header>
 
     <ng-template matExpansionPanelContent>
-      <div class="card-container">
+      <div>
         <ul>
           <li>owner: <a href={{issue.user}}>{{issue.user}}</a></li>
           <li>state: {{issue.state}}</li>

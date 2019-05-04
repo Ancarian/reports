@@ -8,10 +8,22 @@ import {Report, ReportLink} from '../../core/model/model';
   templateUrl: './report.component.html'
 })
 export class ReportComponent implements OnInit {
-  private report: Report;
-  private otherReports: ReportLink;
+  get reportName() {
+    return this._reportName;
+  }
 
-  private reportName;
+  get otherReports(): ReportLink {
+    return this._otherReports;
+  }
+
+  get report(): Report {
+    return this._report;
+  }
+
+  private _report: Report;
+  private _otherReports: ReportLink;
+
+  private _reportName;
 
   constructor(private reportService: ReportServiceService, private route: ActivatedRoute, private router: Router) {
   }
@@ -20,7 +32,7 @@ export class ReportComponent implements OnInit {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.reportService.getReports(params.get('org'), params.get('repository')).then(
         data => {
-          this.otherReports = data;
+          this._otherReports = data;
         }, error => {
           if (error.error.status === 404) {
             this.router.navigate(['/404', error.error]);
@@ -29,8 +41,9 @@ export class ReportComponent implements OnInit {
       );
       this.reportService.getReport(params.get('org'), params.get('repository'), params.get('report')).then(
         data => {
-          this.reportName = params.get('report');
-          this.report = data;
+          this._reportName = params.get('_report');
+          console.log(data);
+          this._report = data;
         }, error => {
           if (error.error.status === 404) {
             this.router.navigate(['/404', error.error]);

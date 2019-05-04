@@ -23,6 +23,7 @@ public class CustomIssue {
     private float estimation;
     private String pullRequestUrl;
     private String milestoneTitle;
+    private IssueStatus issueStatus;
 
     public CustomIssue() {
     }
@@ -41,5 +42,18 @@ public class CustomIssue {
         if (m.find()) {
             estimation = Float.parseFloat(m.group());
         }
+
+        if (pullRequestUrl == null && "open".equals(state)){
+            issueStatus = IssueStatus.NOT_ASSOCIATED;
+        } else if (pullRequestUrl != null && "open".equals(state)){
+            issueStatus = IssueStatus.ASSOCIATED;
+        } else {
+            issueStatus = IssueStatus.MERGED;
+        }
+    }
+
+
+    public enum IssueStatus{
+        NOT_ASSOCIATED, ASSOCIATED, MERGED
     }
 }

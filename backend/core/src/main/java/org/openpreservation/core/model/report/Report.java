@@ -1,22 +1,15 @@
 package org.openpreservation.core.model.report;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
-
-import static java.util.stream.Collectors.toList;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Report {
-	private ProjectReportPart perProject;
-	private List<ReleaseReportPart> perRelease;
-
-	public Report() {
-	}
-
-	public Report(ProjectReportPart projectReportPart, Map<String, List<MilestoneReportPart>> releases) {
-		this.perProject = projectReportPart;
-		this.perRelease = releases.values().stream().map(ReleaseReportPart::new).collect(toList());
-	}
+	private List<CustomIssue> globalBacklog;
+	private List<ReleaseReportPart> releaseBacklog;
 }

@@ -7,11 +7,11 @@
   </div>
   <div class="column col-10" *ngIf="report">
     <mat-tab-group>
-      <mat-tab label="project">
-        <app-per-project [perProject]="report.perProject"></app-per-project>
+      <mat-tab label="Global backlog">
+        <app-issue [issues]="report.globalBacklog" [isNeedPrintStatus]="false"></app-issue>
       </mat-tab>
       <mat-tab label="release">
-        <app-per-release [perRelease]="report.perRelease"></app-per-release>
+        <app-per-release [perRelease]="report.releaseBacklog"></app-per-release>
       </mat-tab>
     </mat-tab-group>
   </div>

@@ -9,12 +9,21 @@ body{
   background-color: #F7F7F7;
 }
 
-.card-container {
-  padding-left: 10px;
-}
-
 .img {
   background-image: url("assets/opf-site-logo.png");
   width: 84px;
   height: 48px
+}
+
+
+.red{
+ color: red;
+}
+
+.amber{
+  color: yellow;
+}
+
+.green{
+  color: green;
 }

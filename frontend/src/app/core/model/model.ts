@@ -1,6 +1,6 @@
 export class Report {
-  perProject: PerProject;
-  perRelease: PerRelease[];
+  globalBacklog: Issue[];
+  releaseBacklog: PerRelease[];
 }
 
 export class ReportLink {
@@ -20,40 +20,23 @@ export class Issue {
   url: string;
   user: string;
   state: string;
+  labels: string[];
+  estimation: number;
+  pullRequestUrl: string;
+  milestoneTitle: string;
+  issueStatus: string;
 }
-
-export class PerProject {
-  incomingIssues: Issue[];
-  backlog: Issue[];
-  releases: Milestone[];
-}
-
 
 export class PerRelease {
-  hasOverduePullRequests: boolean;
-  totalEffort: boolean;
-  outstandingEffort: number;
-  releases: Milestone[];
+  version: string;
+  createdAt: Date;
+  customIssues: Issue[];
+  issueCount: number;
+  integrationTime: number;
+  totalDevelopmentTime: number;
 }
 
-
-export class Milestone {
-  title: string;
-  openIssues: number;
-  closedIssues: number;
-  url: string;
-  state: string;
-}
-
-export class PullRequest {
-  id: number;
-  overDue: boolean;
-  title: string;
-  issueUrl: string;
-  state: string;
-}
-
-export class ErrorMessage{
+export class ErrorMessage {
   time: string;
   message: string;
 }

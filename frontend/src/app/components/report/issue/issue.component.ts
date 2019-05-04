@@ -8,10 +8,12 @@ import {Issue} from '../../../core/model/model';
 export class IssueComponent implements OnInit {
 
   @Input() issues: Issue[];
+  @Input() isNeedPrintStatus: boolean;
 
   constructor() {
   }
 
   ngOnInit() {
+    console.log(this.issues);
   }
 }

@@ -1,13 +1,12 @@
+<p class="row">Product's list</p>
 <div *ngIf="lastReports" class="row">
-  <div *ngFor="let reportLink of lastReports">
-    <div class="col-12">
-      <p>{{reportLink.organisation}}</p>
-      <div *ngFor="let link of reportLink.repositorySummaries" >
+  <ul>
+    <ng-container *ngFor="let reportLink of lastReports">
+      <li *ngFor="let link of reportLink.repositorySummaries">
         <a
-          [routerLink]="['/organisation/'+reportLink.organisation + '/repository/' +link.repository + '/report/' + link.filenames[0]]">{{link.repository}}</a>
-      </div>
-    </div>
-  </div>
-
-
+          [routerLink]="['/organisation/'+reportLink.organisation + '/repository/' +link.repository + '/report/' + link.filenames[0]]">{{link.repository}}
+        </a>
+      </li>
+    </ng-container>
+  </ul>
 </div>

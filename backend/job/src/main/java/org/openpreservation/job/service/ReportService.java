@@ -62,41 +62,52 @@ public class ReportService {
 
 	private Report constructReport(String user, String repository) {
 		try {
-			List<MilestoneReportPart> milestones =
-					githubService.getMilestones(user, repository)
-					             .stream()
-					             .map(MilestoneReportPart::new)
-					             .filter(MilestoneReportPart::isReleaseMilestone)
-					             .collect(toList());
-
-			for (MilestoneReportPart part : milestones) {
-				part.setIssues(new ArrayList<>(githubService.getAllIssues(user, repository, String.valueOf(part.getNumber()))));
-			}
-
-			Map<String, List<MilestoneReportPart>> releases =
-					milestones.stream()
-					          .filter(milestone -> milestone.getShortVersionType() != null)
-					          .sorted((o1, o2) -> o2.getShortVersionType()
-					                                .compareTo(o1.getShortVersionType()))
-					          .collect(groupingBy(MilestoneReportPart::getVersion));
-
-
-			List<ReleaseReportPart> releaseReportParts = releases.values().stream().map(milestonesParts -> {
-				MilestoneReportPart initialMilestone = milestonesParts.get(0);
-				final List<CustomIssue> customIssues = new ArrayList<>();
-				milestonesParts.forEach(milestoneReportPart -> customIssues.addAll(milestoneReportPart.getIssues()));
-				return new ReleaseReportPart(initialMilestone.getVersion(),
-				                             initialMilestone.getCreatedAt(),
-				                             customIssues.stream()
-				                                         .sorted(Comparator.comparingInt(o -> STATUSES.indexOf(o.getIssueStatus())))
-				                                         .collect(toList()));
-			}).collect(toList());
+			List<MilestoneReportPart> milestones = getReleaseMilestones(user, repository);
+			initializeMilestoneIssues(user, repository, milestones);
+			Map<String, List<MilestoneReportPart>> releases = seperateMilestonesByRelease(milestones);
+			List<ReleaseReportPart> releaseReportParts = createReleaseReportParts(releases);
 			List<CustomIssue> backLog = githubService.getOpenedIssues(user, repository, "none");
 			return new Report(backLog, releaseReportParts);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+
+	private List<MilestoneReportPart> getReleaseMilestones(String user, String repository) throws IOException {
+		return githubService.getMilestones(user, repository)
+		                    .stream()
+		                    .map(MilestoneReportPart::new)
+		                    .filter(MilestoneReportPart::isReleaseMilestone)
+		                    .collect(toList());
+	}
+
+	private void initializeMilestoneIssues(String user, String repository, List<MilestoneReportPart> milestones) throws IOException {
+		for (MilestoneReportPart part : milestones) {
+			part.setIssues(new ArrayList<>(githubService.getAllIssues(user, repository, String.valueOf(part.getNumber()))));
+		}
+	}
+
+	private Map<String, List<MilestoneReportPart>> seperateMilestonesByRelease(List<MilestoneReportPart> milestones) {
+		return milestones.stream()
+		                 .filter(milestone -> milestone.getShortVersionType() != null)
+		                 .sorted((o1, o2) -> o2.getShortVersionType()
+		                                       .compareTo(o1.getShortVersionType()))
+		                 .collect(groupingBy(MilestoneReportPart::getVersion));
+	}
+
+	private List<ReleaseReportPart> createReleaseReportParts(Map<String, List<MilestoneReportPart>> releases){
+		return releases.values().stream().map(milestonesParts -> {
+			MilestoneReportPart initialMilestone = milestonesParts.get(0);
+			List<CustomIssue> customIssues = new ArrayList<>();
+			milestonesParts.forEach(milestoneReportPart -> customIssues.addAll(milestoneReportPart.getIssues()));
+			return new ReleaseReportPart(initialMilestone.getVersion(),
+			                             initialMilestone.getCreatedAt(),
+			                             customIssues.stream()
+			                                         .sorted(Comparator.comparingInt(o -> STATUSES.indexOf(o.getIssueStatus())))
+			                                         .collect(toList()));
+		}).collect(toList());
 	}
 }
 

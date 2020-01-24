@@ -3,13 +3,13 @@ package org.openpreservation.core.model.report;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReleaseReportPart {
-	private final List<CustomIssue.IssueStatus> STATUSES = Arrays.asList(CustomIssue.IssueStatus.values());
 
 	private String version;
 	private Date createdAt;
@@ -23,18 +23,18 @@ public class ReleaseReportPart {
 		this.version = version;
 		this.createdAt = createdAt;
 		this.customIssues = new ArrayList<>();
-		this.customIssues= customIssues;
+		this.customIssues = customIssues;
 	}
 
-	public int getIssueCount(){
+	public int getIssueCount() {
 		return customIssues.size();
 	}
 
-	public double getIntegrationTime(){
+	public double getIntegrationTime() {
 		return customIssues.size() * 0.5;
 	}
 
-	public float getTotalDevelopmentTime(){
+	public float getTotalDevelopmentTime() {
 		return customIssues.stream().map(CustomIssue::getEstimation).reduce(0f, Float::sum);
 	}
 }

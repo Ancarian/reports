@@ -74,7 +74,6 @@ public class ReportService {
 		}
 	}
 
-
 	private List<MilestoneReportPart> getReleaseMilestones(String user, String repository) throws IOException {
 		return githubService.getMilestones(user, repository)
 		                    .stream()

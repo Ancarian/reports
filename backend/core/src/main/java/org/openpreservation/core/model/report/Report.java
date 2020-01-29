@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class Report {
 	private List<CustomIssue> globalBacklog;
-	private List<ReleaseReportPart> releaseBacklog;
+	private ReleaseReportPart releaseBacklog;
 }

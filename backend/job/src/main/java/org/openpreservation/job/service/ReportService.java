@@ -2,6 +2,7 @@ package org.openpreservation.job.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.openpreservation.core.model.config.Organisation;
 import org.openpreservation.core.model.report.CustomIssue;
 import org.openpreservation.core.model.report.MilestoneReportPart;
@@ -64,10 +65,10 @@ public class ReportService {
 		try {
 			List<MilestoneReportPart> milestones = getReleaseMilestones(user, repository);
 			initializeMilestoneIssues(user, repository, milestones);
-			Map<String, List<MilestoneReportPart>> releases = seperateMilestonesByRelease(milestones);
-			List<ReleaseReportPart> releaseReportParts = createReleaseReportParts(releases);
+			List<MilestoneReportPart> latestRelease = separateMilestonesByRelease(milestones);
+			ReleaseReportPart releaseReportPart = createReleaseReportParts(latestRelease);
 			List<CustomIssue> backLog = githubService.getOpenedIssues(user, repository, "none");
-			return new Report(backLog, releaseReportParts);
+			return new Report(backLog, releaseReportPart);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -88,26 +89,30 @@ public class ReportService {
 		}
 	}
 
-	private Map<String, List<MilestoneReportPart>> seperateMilestonesByRelease(List<MilestoneReportPart> milestones) {
-		return milestones.stream()
-		                 .filter(milestone -> milestone.getShortVersionType() != null)
-		                 .sorted((o1, o2) -> o2.getShortVersionType()
-		                                       .compareTo(o1.getShortVersionType()))
-		                 .collect(groupingBy(MilestoneReportPart::getVersion));
+	private List<MilestoneReportPart> separateMilestonesByRelease(List<MilestoneReportPart> milestones) {
+		Map<String, List<MilestoneReportPart>> releases = milestones.stream()
+		                                                            .filter(milestone -> milestone.getShortVersionType() != null)
+		                                                            .collect(groupingBy(MilestoneReportPart::getVersion));
+
+		String latestVersionName = releases.keySet().stream().max(Comparator.comparing(DefaultArtifactVersion::new)).orElse(null);
+		return latestVersionName == null ? Collections.emptyList(): releases.get(latestVersionName);
 	}
 
-	private List<ReleaseReportPart> createReleaseReportParts(Map<String, List<MilestoneReportPart>> releases){
-		return releases.values().stream().map(milestonesParts -> {
-			MilestoneReportPart initialMilestone = milestonesParts.get(0);
-			List<CustomIssue> customIssues = new ArrayList<>();
-			milestonesParts.forEach(milestoneReportPart -> customIssues.addAll(milestoneReportPart.getIssues()));
-			return new ReleaseReportPart(initialMilestone.getVersion(),
-			                             initialMilestone.getCreatedAt(),
-			                             customIssues.stream()
-			                                         .sorted(Comparator.comparingInt(o -> STATUSES.indexOf(o.getIssueStatus())))
-			                                         .collect(toList()));
-		}).collect(toList());
+	private ReleaseReportPart createReleaseReportParts(List<MilestoneReportPart> release) {
+		if (release.isEmpty()) {
+			return null;
+		}
+		MilestoneReportPart initialMilestone = release.get(0);
+		List<CustomIssue> customIssues = new ArrayList<>();
+		release.forEach(milestoneReportPart -> customIssues.addAll(milestoneReportPart.getIssues()));
+		return new ReleaseReportPart(initialMilestone.getVersion(),
+		                             initialMilestone.getCreatedAt(),
+		                             customIssues.stream()
+		                                         .sorted(Comparator.comparingInt(o -> STATUSES.indexOf(o.getIssueStatus())))
+		                                         .collect(toList()));
 	}
+
+	;
 }
 
 

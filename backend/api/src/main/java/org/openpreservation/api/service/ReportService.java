@@ -40,23 +40,14 @@ public class ReportService {
 				if (projectDirectory.exists()) {
 					List<String> fileNames = getFileNames(projectDirectory.toPath());
 					if (!fileNames.isEmpty()) {
-						reportRepositorySummaries.add(new RepositorySummary(repository,
-								Collections.singletonList(fileNames.get(0))));
+						Report latestReport = getReport(org, repository, LocalDate.parse(fileNames.get(0)));
+						reportRepositorySummaries.add(new RepositorySummary(repository, latestReport));
 					}
 				}
 			}
 			links.add(new ReportSummary(org, reportRepositorySummaries));
 		}
 		return links;
-	}
-
-	public ReportSummary getReports(String user, String repository) {
-		File projectDirectory = pathService.getProjectDirectoryPath(user, repository);
-		if (!projectDirectory.exists()) {
-			throw new NotFoundException("Incorrect user or repository");
-		}
-		List<String> fileNames = getFileNames(projectDirectory.toPath());
-		return new ReportSummary(user, Collections.singletonList(new RepositorySummary(repository, fileNames)));
 	}
 
 	public Report getReport(String user, String repository, LocalDate reportDate) {
